@@ -9,7 +9,14 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
+
+  # =========================
+  # CI: Build and Push
+  # =========================
   build:
     runs-on: ubuntu-latest
 
@@ -54,3 +61,66 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/devops-training:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/devops-training:${{ github.sha }}
+
+  # =========================
+  # CD: Deploy to Ubuntu
+  # =========================
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github_deploy
+          chmod 600 ~/.ssh/github_deploy
+
+          ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy Application to Ubuntu
+        run: |
+          ssh -i ~/.ssh/github_deploy \
+            -o StrictHostKeyChecking=yes \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+
+          set -e
+
+          echo "Pulling latest Docker image..."
+
+          docker pull waleednemer/devops-training:latest
+
+          echo "Stopping old container..."
+
+          docker rm -f devops-training || true
+
+          echo "Starting new container..."
+
+          docker run -d \
+            --name devops-training \
+            --restart unless-stopped \
+            -p 5006:5006 \
+            waleednemer/devops-training:latest
+
+          echo "Deployment completed!"
+
+          docker ps
+
+          EOF
+
+      - name: Deployment Summary
+        if: success()
+        run: |
+          echo "Application deployed successfully to Ubuntu."
