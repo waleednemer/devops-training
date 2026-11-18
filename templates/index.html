@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Training | Version 3.0</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">DevOps<span>.</span></div>
+        <div class="nav-status">● System Online</div>
+    </nav>
+
+    <main class="container">
+
+        <section class="hero">
+            <div class="tag">AUTOMATED CI/CD PIPELINE</div>
+
+            <h1>Welcome To <span>DevOps</span></h1>
+
+            <p>
+                Successfully deployed using Docker,
+                GitHub Actions and automated CI/CD.
+            </p>
+
+            <div class="version">
+                <span>APPLICATION VERSION</span>
+                <strong>3.0</strong>
+            </div>
+
+            <a href="#technologies" class="btn">Explore Technologies →</a>
+        </section>
+
+        <section id="technologies" class="technologies">
+            <h2>Technologies Used</h2>
+
+            <div class="cards">
+                <div class="card">
+                    <div class="icon">🐍</div>
+                    <h3>Python</h3>
+                    <p>Application Development</p>
+                </div>
+
+                <div class="card">
+                    <div class="icon">🐳</div>
+                    <h3>Docker</h3>
+                    <p>Containerization</p>
+                </div>
+
+                <div class="card">
+                    <div class="icon">⚙️</div>
+                    <h3>GitHub Actions</h3>
+                    <p>CI/CD Automation</p>
+                </div>
+
+                <div class="card">
+                    <div class="icon">☁️</div>
+                    <h3>Docker Hub</h3>
+                    <p>Image Registry</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="success">
+            <h2>Deployment Successful!</h2>
+            <p>This application is running inside a Docker container.</p>
+            <span>Automated Deployment • Ubuntu Server • Tailscale + SSH</span>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>DevOps Training Project | Version 3.0</p>
+        <p>Built with Python, Flask & Docker</p>
+    </footer>
+
+</body>
+</html>
