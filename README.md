@@ -57,6 +57,10 @@ Flask Application
 http://SERVER-IP:5008
 ```
 
+## Project Architecture Diagram
+
+![DevOps CI/CD Pipeline Architecture](images/devops-architecture.png)
+
 ## Technologies Used
 
 | Technology | Purpose |
@@ -80,6 +84,9 @@ devops-training/
 ├── .github/
 │   └── workflows/
 │       └── ci-cd.yml
+│
+├── images/
+│   └── devops-architecture.png
 │
 ├── app.py
 ├── requirements.txt
@@ -208,8 +215,6 @@ curl -i http://127.0.0.1:5008/
 
 **Waleed Nemer**
 
-GitHub: https://github.com/waleednemer
-
-Docker Hub: https://hub.docker.com/u/waleednemer
-
-Project: [devops-training](https://github.com/waleednemer/devops-training)
+- GitHub: https://github.com/waleednemer
+- Docker Hub: https://hub.docker.com/u/waleednemer
+- Project Repository: https://github.com/waleednemer/devops-training
