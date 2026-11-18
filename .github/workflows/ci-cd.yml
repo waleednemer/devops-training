@@ -132,7 +132,7 @@ jobs:
           docker run -d \
             --name devops-training \
             --restart unless-stopped \
-            -p 5006:5006 \
+            -p 5008:5006 \
             waleednemer/devops-training:latest
 
           echo "Deployment completed!"
