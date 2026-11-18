@@ -77,21 +77,45 @@ jobs:
         with:
           authkey: ${{ secrets.TS_AUTHKEY }}
 
+      # =========================
+      # SSH Configuration
+      # =========================
       - name: Setup SSH Key
+        env:
+          SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY_B64 }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
+          set -e
+
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github_deploy
+          printf '%s' "$SSH_PRIVATE_KEY_B64" | base64 --decode > ~/.ssh/github_deploy
+
           chmod 600 ~/.ssh/github_deploy
 
-          ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/github_deploy > /dev/null
 
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+          chmod 600 ~/.ssh/known_hosts
+
+          echo "SSH key configured successfully."
+
+      # =========================
+      # Deploy Application
+      # =========================
       - name: Deploy Application to Ubuntu
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
         run: |
+          set -e
+
           ssh -i ~/.ssh/github_deploy \
+            -o IdentitiesOnly=yes \
             -o StrictHostKeyChecking=yes \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            "$SSH_USER@$SSH_HOST" << 'EOF'
 
           set -e
 
@@ -117,6 +141,9 @@ jobs:
 
           EOF
 
+      # =========================
+      # Deployment Summary
+      # =========================
       - name: Deployment Summary
         if: success()
         run: |
